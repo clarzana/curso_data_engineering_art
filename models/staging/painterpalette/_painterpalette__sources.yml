@@ -1,0 +1,79 @@
+version: 2
+
+sources:
+  - name: painterpalette # name of the source
+    schema: bronze_stage # this is the schema our raw data lives in
+    database: "@{{ env_var('DBT_ENVIRONMENTS') }}_BRONZE_DB" # this is the name of our database
+    description: >
+      Cada stage interno de snowflake:
+      PainterPalette.csv
+      announcements_new_array.json
+      art500k_paintings_full.csv
+      institutions_origins.csv
+      movements_origins.csv
+      styles_origins.csv
+      wikiart_art_pieces.csv
+      wikiart_paintings_with_birth_cleaned.csv
+      * announcements_mini.json
+      * art500k_paintings_cleaned.csv
+      * wikiart_paintings_refined.csv
+      (* : Archivo no usado en la ingesta)
+
+    quoting:
+      database: false
+      schema: false
+      identifier: false
+
+    freshness:
+      warn_after: { count: 24, period: hour }
+      error_after: { count: 48, period: hour }
+
+    tables:
+
+    ##CÓDIGO ANTIGUO: ESCRIBIR TABLAS DE ESTE PROYECTO
+      - name: addresses
+        loaded_at_field: _fivetran_synced
+        description: >
+          Direcciones físicas de los usuarios
+        columns:
+          - name: address_id
+            data_type: varchar(256)
+            description: >
+              Clave primaria
+            data_tests:
+              - not_null
+              - unique
+          - name: zipcode
+            data_type: number(38, 0)
+            description: >
+              Código postal de la dirección
+            data_tests:
+              - not_null
+          - name: country
+            data_type: varchar(256)
+            description: >
+              País de la dirección
+            data_tests:
+              - not_null
+          - name: address
+            data_type: varchar(256)
+            description: >
+              La propia dirección 
+            data_tests:
+              - not_null
+          - name: state
+            data_type: varchar(256)
+            description: >
+              Estado donde se encuentra la dirección (en eeuu)
+            data_tests:
+              - not_null
+          - name: _fivetran_deleted
+            data_type: boolean
+            description: >
+              Historificación del dato
+          - name: _fivetran_synced
+            data_type: timestamp_tz
+            description: >
+              Cuándo se actualizó este dato por última vez
+            data_tests:
+              - not_null
