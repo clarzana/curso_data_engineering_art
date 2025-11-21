@@ -34,20 +34,20 @@ models:
     # Applies to all files under models/staging/ and models/marts/
     staging:
       +materialized: view
-      +database: "{{ env_var('DBT_ENVIRONMENTS') }}_SILVER_DB"
+      +database: "PAINTERPALETTE_DEV_SILVER_DB"
       painterpalette:
         +schema: painterpalette
     
     marts:
       +materialized: table
-      +database: "{{ env_var('DBT_ENVIRONMENTS') }}_GOLD_DB"
+      +database: "PAINTERPALETTE_DEV_GOLD_DB"
       core:
         +schema: core
 
 seeds:
   +schema: seed_data
-  +database: "{{ env_var('DBT_ENVIRONMENTS') }}_BRONZE_DB"
+  +database: "PAINTERPALETTE_DEV_BRONZE_DB"
 snapshots:
   +transient: false
-  +target_database: "{{ env_var('DBT_ENVIRONMENTS') }}_SILVER_DB"
+  +target_database: "PAINTERPALETTE_DEV_SILVER_DB"
   +target_schema: snapshots
