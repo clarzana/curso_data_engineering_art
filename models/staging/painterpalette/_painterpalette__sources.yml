@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: painterpalette # name of the source
     schema: bronze # this is the schema our raw data lives in
-    database: "PAINTERPALETTE_DEV_BRONZE_DB_BRONZE_DB" # this is the name of our database
+    database: "PAINTERPALETTE_DEV_BRONZE_DB" # this is the name of our database
     description: >
       Cada stage interno de snowflake:
       PainterPalette.csv
@@ -25,7 +25,6 @@ sources:
       identifier: false
 
     tables:
-
       - name: painterpalette
         loaded_at_field: _fivetran_synced
         description: >
@@ -67,7 +66,7 @@ sources:
             data_type: varchar(512)
             description: >
               Movimiento artístico que sigue el artista, según art500k
-            
+
           - name: birth_place
             data_type: varchar(512)
             description: >
@@ -82,17 +81,17 @@ sources:
             data_type: varchar(512)
             description: >
               Año en que nació el artista
-            
+
           - name: death_year
             data_type: varchar(512)
             description: >
               Año en que murió el artista
-          
+
           - name: firstyear
             data_type: varchar(512)
             description: >
               Año en que el artista comenzó su carrera
-            
+
           - name: lastyear
             data_type: varchar(512)
             description: >
@@ -102,22 +101,22 @@ sources:
             data_type: varchar(512)
             description: >
               Número de obras del artista, según wikiart
-          
+
           - name: locations
             data_type: varchar(512)
             description: >
               Lista de ciudades en que el artista vivió
-            
+
           - name: locations_with_years
             data_type: varchar(512)
             description: >
               Lista de ciudades en que el artista vivió, junto al periodo en que vivió en ellas (en años)
-            
+
           - name: styles_extended
             data_type: varchar(1024)
             description: >
               Estilos que practicó el artista, junto al número de obras que creó con dichos estilos
-            
+
           - name: stylescount
             data_type: varchar(512)
             description: >
@@ -133,12 +132,12 @@ sources:
             data_type: varchar(2048)
             description: >
               Oficios artísticos practicados
-            
+
           - name: paintingsexhibitedat
             data_type: varchar(1024)
             description: >
               Lugares donde se han expuesto las obras del artista
-            
+
           - name: paintingsexhibitedatcount
             data_type: varchar(2048)
             description: >
@@ -153,43 +152,42 @@ sources:
             data_type: varchar(24576)
             description: >
               Lista de cosas y artistas que influenció en el artista
-            
+
           - name: influencedon
             data_type: varchar(2048)
             description: >
               Lista de artistas en los que influenció el artista
-            
+
           - name: pupils
             data_type: varchar(512)
             description: >
               Pupilos del artista
-            
+
           - name: teachers
             data_type: varchar(8192)
             description: >
               Mentores del artista
-            
+
           - name: friendsandcoworkers
             data_type: varchar(16384)
             description: >
               Amigos y colegas del artista
-            
+
           - name: contemporary
             data_type: varchar(512)
             description: >
               Respuesta a la pregunta: ¿es contemporáneo el artista?
-            
+
           - name: artmovement
             data_type: varchar(512)
             description: >
               Otra columna más que detalla el movimiento artístico del artista.
               Se detalla el número de obras que creó, asociadas a cada movimiento
-            
+
           - name: type
             data_type: varchar(512)
             description: >
               Tipo de obra/medio: pintura, escultura, graffiti, diseño gráfico, ...
-
 
       - name: wikiart_pieces
         description: >
@@ -201,28 +199,28 @@ sources:
               - not_null
             description: >
               Nombre del autor
-              
+
           - name: style
             data_type: varchar(512)
             description: >
               Estilo de la obra
-              
+
           - name: genre
             data_type: varchar(512)
             description: >
               Género pictórico de la obra (paisaje, retrato, desnudo, instalación, abstracto, figurativo, etc)
-              
+
           - name: movement
             data_type: varchar(512)
             description: >
               Movimiento al que representa la obra.
               (Columna en desuso en la capa silver)
-              
+
           - name: tags
             data_type: varchar(512)
             description: >
               Lista de tópicos y conceptos relacionados con la obra
-              
+
           - name: url
             data_type: varchar(512)
             description: >
@@ -329,7 +327,7 @@ sources:
             data_type: varchar(1024)
             description: >
               Medio de la obra (Lienzo, papel, témpera, acuarela, óleo, escultura, film)
-      
+
           - name: tag
             data_type: varchar(512)
             description: >
@@ -353,7 +351,7 @@ sources:
           - name: series
             data_type: varchar(512)
             description: >
-              Serie artística a la que pertenece la obra.            
+              Serie artística a la que pertenece la obra.
 
           - name: artinstitution
             data_type: varchar(16384)
@@ -375,4 +373,101 @@ sources:
             data_type: varchar(1024)
             description: >
               Ruta en el sistema de archivos de la base de datos original donde se almacena una copia digital de la obra, o una fotografía de esta.
-              
+
+      - name: exhibitions_journals
+        description: >
+          Tabla de anuncios sobre revistas o exposiciones artísticas,
+          extraída por e-flux.
+          La labor de archivo de e-flux comenzó en el año 2000,
+          y en esta base de datos tenemos datos hasta 2024.
+        columns:
+          - name: id
+            data_type: varchar(8)
+            description: >
+              Clave primaria original
+            data_tests:
+              - not_null
+
+          - name: eflux_link
+            data_type: varchar(512)
+            description: >
+              Enlace al anuncio en el sitio web de e-flux.
+              Debe precederse de www.e-flux.com/
+
+          - name: title_artists
+            data_type: varchar(512)
+            description: >
+              Lista de artistas o colectivos que figuran junto al título del evento.
+
+          - name: title
+            data_type: varchar(512)
+            description: >
+              Título de la revista o exposición que se anuncia
+            data_tests:
+              - not_null
+
+          - name: subtitle
+            data_type: varchar(512)
+            description: >
+              Subtítulo de la revista o exposición que se anuncia
+
+          - name: announcement_date
+            data_type: date
+            description: >
+              Fecha en que se anuncia el evento.
+              Es distinto a la fecha/rango de tiempo en que la exposición estará abierta.
+            data_tests:
+              - not_null
+
+          - name: artists
+            data_type: array
+            description: >
+              Lista completa de artistas o colectivos que participan en la exposición, o que figuran en la revista.
+
+      
+      - name: institutions_origins
+        description: >
+          Tabla con instituciones de arte, y su país de origen.
+        columns:
+          - name: institution_name
+            data_type: varchar(256)
+            description: >
+              Nombre de la institución de arte.
+            
+          - name: origin_country
+            data_type: varchar(256)
+            description: >
+              Nombre del país de origen.
+
+      
+      - name: movements_origins
+        description: >
+          Tabla con movimientos artísticos, y su país de origen.
+        columns:
+          - name: movement_name
+            data_type: varchar(256)
+            description: >
+              Nombre del movimiento artístico.
+            
+          - name: origin_country
+            data_type: varchar(256)
+            description: >
+              Nombre del país de origen.
+
+
+      - name: styles_origins
+        description: >
+          Tabla con estilos artísticos, y su país de origen.
+        columns:
+          - name: style_name
+            data_type: varchar(256)
+            description: >
+              Nombre del estilo artístico.
+            
+          - name: origin_country
+            data_type: varchar(256)
+            description: >
+              Nombre del país de origen.
+
+
+
