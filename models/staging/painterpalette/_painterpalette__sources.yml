@@ -55,7 +55,7 @@ sources:
           - name: styles
             data_type: varchar(1024)
             description: >
-              Estilos que practica el artista. El estilo está relacionado con la técnica, más con lo práctico que con lo ideológico
+              Lista de estilos que practica el artista. El estilo está relacionado con la técnica, más con lo práctico que con lo ideológico
 
           - name: movement
             data_type: varchar(512)
