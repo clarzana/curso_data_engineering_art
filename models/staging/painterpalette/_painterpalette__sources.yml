@@ -13,7 +13,7 @@ sources:
       movements_origins.csv
       styles_origins.csv
       wikiart_art_pieces.csv
-      wikiart_paintings_with_birth_cleaned.csv
+      * wikiart_paintings_with_birth_cleaned.csv
       * announcements_mini.json
       * art500k_paintings_cleaned.csv
       * wikiart_paintings_refined.csv
@@ -110,12 +110,13 @@ sources:
           - name: locations_with_years
             data_type: varchar(512)
             description: >
-              Lista de ciudades en que el artista vivió, junto al periodo en que vivió en ellas (en años)
+              Lista de ciudades en que el artista vivió, junto al periodo en que vivió en ellas (en años).
+              Con muchos menos valores que locations (14.1%, frente al 38.2% de locations).
 
           - name: styles_extended
             data_type: varchar(1024)
             description: >
-              Estilos que practicó el artista, junto al número de obras que creó con dichos estilos
+              Estilos que practicó el artista, junto al número de obras que creó con dichos estilos.
 
           - name: stylescount
             data_type: varchar(512)
@@ -152,6 +153,7 @@ sources:
             data_type: varchar(24576)
             description: >
               Lista de cosas y artistas que influenció en el artista
+
 
           - name: influencedon
             data_type: varchar(2048)
@@ -295,11 +297,15 @@ sources:
             data_type: varchar(512)
             description: >
               Influencias de las que bebe la obra.
+              Columna con alguna información coherente, pero mucha otra no tanto.
+              Por desgracia, un 95% de esta columna está vacía, actualmente.
 
           - name: influencedon
             data_type: varchar(512)
             description: >
               Instituciones, artistas y otras entidades que esta obra influencia.
+              Columna con alguna información coherente, pero mucha otra no tanto.
+              Por desgracia, un 95% de esta columna está vacía, actualmente.
 
           - name: familyandrelatives
             data_type: varchar(512)
@@ -427,7 +433,7 @@ sources:
       
       - name: institutions_origins
         description: >
-          Tabla con instituciones de arte, y su país de origen.
+          Tabla con escuelas y grupos de arte, y su país de origen.
         columns:
           - name: institution_name
             data_type: varchar(256)
