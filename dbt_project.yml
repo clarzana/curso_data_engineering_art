@@ -47,6 +47,7 @@ models:
 seeds:
   +schema: seed_data
   +database: "PAINTERPALETTE_DEV_BRONZE_DB"
+  
 snapshots:
   +transient: false
   +target_database: "PAINTERPALETTE_DEV_SILVER_DB"
