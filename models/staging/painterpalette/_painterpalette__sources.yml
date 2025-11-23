@@ -342,7 +342,7 @@ sources:
           - name: location
             data_type: varchar(512)
             description: >
-              Lugar donde se creó la obra, si se conoce.
+              Lugar donde se encuentra la obra.
 
           - name: originaltitle
             data_type: varchar(512)

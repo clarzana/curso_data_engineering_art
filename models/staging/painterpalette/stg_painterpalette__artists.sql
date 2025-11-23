@@ -2,15 +2,22 @@ with
 
 source as (
 
-    select * from {{ source('painterpalette', 'painterpalette') }}
+    select * from
+        {{ ref('base_painterpalette__painterpalette') }},
+        {{ ref("base_painterpalette__art500k_paintings") }},
+        {{ ref("base_painterpalette__wikiart_pieces") }},
+        {{ ref("base_painterpalette__exhibitions_journals") }},
+        {{ ref("demonyms")}}
+
 
 ),
 
 renamed as (
 
-    select *
+    select 
+        -- artist_id,
 
-    from source
+    from source, lateral flatten(input)
 
 )
 
