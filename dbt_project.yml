@@ -45,7 +45,7 @@ models:
         +schema: core
 
 seeds:
-  +schema: seed_data
+  +schema: "SEEDS"
   +database: "PAINTERPALETTE_DEV_BRONZE_DB"
   
 snapshots:
