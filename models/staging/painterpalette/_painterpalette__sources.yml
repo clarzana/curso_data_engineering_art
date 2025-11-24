@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: painterpalette # name of the source
-    schema: bronze # this is the schema our raw data lives in
+    schema: bronze_raw # this is the schema our raw data lives in
     database: "PAINTERPALETTE_DEV_BRONZE_DB" # this is the name of our database
     description: >
       Cada stage interno de snowflake:
@@ -373,7 +373,7 @@ sources:
           - name: theme
             data_type: varchar(512)
             description: >
-              Tema general de la obra. Probablemente pueda ser tratado como una etiqueta más.
+              Tema general de la obra. Probablemente pueda ser tratado como una etiqueta (tag) más.
 
           - name: path
             data_type: varchar(1024)

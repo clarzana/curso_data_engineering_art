@@ -8,17 +8,20 @@ source as (
 
 
 ),
-
+source_mo as (
+    select * from
+        {{ ref('base_painterpalette__movements_origins')}}
+),
 renamed as (
 
     select distinct
         {{ dbt_utils.generate_surrogate_key(['citizenship'])}}::varchar(32) as country_id,
-        citizenship::varchar(256) as country_name
+        ifnull(citizenship, 'Country unknown')::varchar(256) as country_name
     from source
     union
     select distinct
-        {{ dbt_utils.generate_surrogate_key(['country'])}}::varchar(32 as country_id),
-        country::varchar(256) as country_name
+        {{ dbt_utils.generate_surrogate_key(['country'])}}::varchar(32) as country_id,
+        ifnull(country, 'Country unknown')::varchar(256) as country_name
     from (
         select
             split_nationality.value as value,
@@ -27,9 +30,14 @@ renamed as (
         from source, lateral split_to_table(input => nationality, ',') split_nationality
     ) where value ilike demonym
     union
+    select distinct
+        {{ dbt_utils.generate_surrogate_key(['mo.origin_country'])}}::varchar(32) as country_id,
+        ifnull(mo.origin_country, 'Country unknown')::varchar(256) as country_name
+    from source_mo mo
+    union
     select
-        md5('nocountry')::varchar(32) as country_id,
-        'Unknown'::varchar(256) as country_name
+        {{ dbt_utils.generate_surrogate_key(['null'])}}::varchar(32) as country_id,
+        'Country unknown'::varchar(256) as country_name
 )
 
 select distinct * from renamed
