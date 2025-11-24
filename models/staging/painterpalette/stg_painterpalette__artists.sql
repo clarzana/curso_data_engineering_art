@@ -1,17 +1,21 @@
 with 
 
-source as (
-
+source_pp as (
     select * from
-        {{ ref('base_painterpalette__painterpalette') }},
-        {{ ref("base_painterpalette__art500k_paintings") }},
-        {{ ref("base_painterpalette__wikiart_pieces") }},
-        {{ ref("base_painterpalette__exhibitions_journals") }},
-        {{ ref("demonyms")}}
-
-
+        {{ ref('base_painterpalette__painterpalette') }}
 ),
-
+source_a5 as (
+    select * from
+        {{ ref("base_painterpalette__art500k_paintings") }}
+),
+source_wp as (
+    select * from
+        {{ ref("base_painterpalette__wikiart_pieces") }}
+),
+source_ej as (
+    select * from
+        {{ ref("base_painterpalette__exhibitions_journals") }}
+),
 renamed as (
 
     select 

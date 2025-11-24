@@ -15,12 +15,12 @@ source_mo as (
 renamed as (
 
     select distinct
-        {{ dbt_utils.generate_surrogate_key(['citizenship'])}}::varchar(32) as country_id,
+        {{ dbt_utils.generate_surrogate_key([return_null_substitute('citizenship', 'countries')])}}::varchar(32) as country_id,
         ifnull(citizenship, 'Country unknown')::varchar(256) as country_name
     from source
     union
     select distinct
-        {{ dbt_utils.generate_surrogate_key(['country'])}}::varchar(32) as country_id,
+        {{ dbt_utils.generate_surrogate_key([return_null_substitute('country', 'countries')])}}::varchar(32) as country_id,
         ifnull(country, 'Country unknown')::varchar(256) as country_name
     from (
         select
@@ -31,12 +31,12 @@ renamed as (
     ) where value ilike demonym
     union
     select distinct
-        {{ dbt_utils.generate_surrogate_key(['mo.origin_country'])}}::varchar(32) as country_id,
+        {{ dbt_utils.generate_surrogate_key([return_null_substitute('mo.origin_country', 'countries')])}}::varchar(32) as country_id,
         ifnull(mo.origin_country, 'Country unknown')::varchar(256) as country_name
     from source_mo mo
     union
     select
-        {{ dbt_utils.generate_surrogate_key(['null'])}}::varchar(32) as country_id,
+        {{ dbt_utils.generate_surrogate_key([return_null_substitute('null', 'countries')])}}::varchar(32) as country_id,
         'Country unknown'::varchar(256) as country_name
 )
 
