@@ -16,13 +16,17 @@ models:
         data_type: varchar
         description: ""
 
-  - name: stg_painterpalette__occupations
+  - name: stg_painterpalette__art_schools
     description: ""
     columns:
-      - name: occupation_id
+      - name: art_school_id
         data_type: varchar
         description: ""
 
-      - name: occupation_name
+      - name: art_school_name
+        data_type: varchar
+        description: ""
+
+      - name: art_school_origin_country_id
         data_type: varchar
         description: ""

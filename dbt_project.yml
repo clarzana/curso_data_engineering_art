@@ -60,8 +60,8 @@ snapshots:
 
 vars:
   art_school_null: "'noartschool'"
-  movement_null: "'nomovement'"
   style_null: "'nostyle'"
-  occupation_null: "'nooccupation'"
   artist_null: "'noartist'"
   place_null: "'noplace'"
+  medium_null: "'nomedium'"
+  genre_null: "'nogenre'"

@@ -12,6 +12,10 @@
         {% set target_table_null = var("style_null") %}
     {%- elif target_table=='occupations' %}
         {% set target_table_null = var("occupation_null") %}
+    {%- elif target_table=='media' %}
+        {% set target_table_null = var("medium_null") %}
+    {%- elif target_table=='genres' %}
+        {% set target_table_null = var("genre_null") %}
     {% endif %}
     ifnull({{ my_value }}, {{ target_table_null }})
 {% endmacro %}
