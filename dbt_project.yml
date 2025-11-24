@@ -64,4 +64,4 @@ vars:
   style_null: "'nostyle'"
   occupation_null: "'nooccupation'"
   artist_null: "'noartist'"
-  country_null: "'nocountry'"
+  place_null: "'noplace'"

@@ -4,8 +4,8 @@
         {%- set target_table_null = var("art_school_null") %}
     {%- elif target_table=='artists' %}
         {% set target_table_null = var("artist_null") %}
-    {%- elif target_table=='countries' %}
-        {% set target_table_null = var("country_null") %}
+    {%- elif target_table=='places' %}
+        {% set target_table_null = var("place_null") %}
     {%- elif target_table=='movements' %}
         {% set target_table_null = var("movement_null") %}
     {%- elif target_table=='styles' %}
