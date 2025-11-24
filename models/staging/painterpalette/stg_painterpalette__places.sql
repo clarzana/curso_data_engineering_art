@@ -24,43 +24,49 @@ collect as (
     select distinct
         split_locations.value as place_name
     from source_pp ppl, lateral split_to_table(input => trim(ppl.locations, ', []'), ',') as split_locations
-    union
+    union by name
     select distinct
-        trim(split_loc_with_years.value, '0123456789: ''"-') as place_namec
-        null as pp_demonym
-    from source_pp pplwy, lateral split_to_table(input => trim(ppl.locations_with_years, ', []'), ',') as split_loc_with_years
+        trim(split_loc_with_years.value, '0123456789: ''"-') as place_name
+    from source_pp pplwy, lateral split_to_table(input => trim(pplwy.locations_with_years, ', []'), ',') as split_loc_with_years
     where place_name not like ''
-    union
+    union by name
     select
-        nationality as place_name,
-        nationality as pp_demonym
-    from source_pp ppna, lateral split_to_table(input => ppna.nationality, ',')
-    union
+        split_ppna.value as place_name
+    from source_pp ppna, lateral split_to_table(input => ppna.nationality, ',') as split_ppna
+    union by name
     select
-        citizenship as place_name
+        ppci.citizenship as place_name
     from source_pp ppci
+    union by name
     select distinct
-        replace(trim(location, '"'), '""', '"') as place_name,
-        null as pp_demonym
+        replace(trim(a5.location, '"'), '""', '"') as place_name
     from source_a5 a5
-    union
+    union by name
     select distinct
-        mo.origin_country as place_name,
-        null as pp_demonym
+        mo.origin_country as place_name
     from source_mo mo
 
 ), renamed as (
     select
-        {{ dbt_utils.generate_surrogate_key([ return_null_substitute('c.place_name', 'places') ]) }}::varchar(32) as place_id,
-        case
-            when c.place_name ilike demo.demonym
-            then demo.Country
-            else c.place_name
-        end::varchar(512) as place_name,
-        demo.country as demonym
+        replace(replace(
+            case
+                when contains(lower(demo.demonym), lower(c.place_name))
+                then demo.Country
+                else c.place_name
+            end
+        , ''''), '"')::varchar(512) as place_name
     from collect c
     full join source_demo demo
-    on c.pp_demonym=demo.demonym
+    on c.place_name = demo.demonym
+    where place_name like '%''%'
+    
 )
 
-select distinct * from renamed
+select distinct
+    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.place_name', 'places') ]) }}::varchar(32) as place_id,
+    r.place_name
+from renamed r
+union
+select
+    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'places') ]) }}::varchar(32) as place_id,
+    'Unknown place' as place_name
