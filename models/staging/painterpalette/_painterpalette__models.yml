@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_painterpalette__styles
+    description: ""
+    columns:
+      - name: style_id
+        data_type: varchar
+        description: ""
+
+      - name: style_name
+        data_type: varchar
+        description: ""
+
+      - name: style_origin_country_id
+        data_type: varchar
+        description: ""
+
+  - name: stg_painterpalette__occupations
+    description: ""
+    columns:
+      - name: occupation_id
+        data_type: varchar
+        description: ""
+
+      - name: occupation_name
+        data_type: varchar
+        description: ""

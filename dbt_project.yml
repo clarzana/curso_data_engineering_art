@@ -57,3 +57,11 @@ snapshots:
   +transient: false
   +target_database: "PAINTERPALETTE_DEV_SILVER_DB"
   +target_schema: snapshots
+
+vars:
+  art_school_null: "'noartschool'"
+  movement_null: "'nomovement'"
+  style_null: "'nostyle'"
+  occupation_null: "'nooccupation'"
+  artist_null: "'noartist'"
+  place_null: "'noplace'"
