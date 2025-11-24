@@ -47,6 +47,11 @@ models:
 seeds:
   +schema: "SEEDS"
   +database: "PAINTERPALETTE_DEV_BRONZE_DB"
+  +column_types:
+    country: varchar(64)
+    demonym: varchar(64)
+
+    
   
 snapshots:
   +transient: false
