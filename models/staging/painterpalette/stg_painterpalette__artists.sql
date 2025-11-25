@@ -19,9 +19,20 @@ source_ej as (
 renamed as (
 
     select 
-        -- artist_id,
+        
+    from source_pp pp
+    union
+    select
 
-    from source, lateral flatten(input)
+    from source_a5 a5
+    union
+    select
+
+    from source_wp wp
+    union
+    select
+
+    from source_ej ej
 
 )
 
