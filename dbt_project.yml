@@ -65,3 +65,5 @@ vars:
   place_null: "'noplace'"
   medium_null: "'nomedium'"
   genre_null: "'nogenre'"
+  gender_null: "'nogender'"
+  exhibition_null: "'noexhibition'"

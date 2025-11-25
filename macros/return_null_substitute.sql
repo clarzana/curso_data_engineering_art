@@ -16,6 +16,10 @@
         {% set target_table_null = var("medium_null") %}
     {%- elif target_table=='genres' %}
         {% set target_table_null = var("genre_null") %}
+    {%- elif target_table=='genders' %}
+        {% set target_table_null = var("gender_null") %}
+    {%- elif target_table=='exhibitions_journals' %}
+        {% set target_table_null = var("exhibition_null") %}
     {% endif %}
     ifnull({{ my_value }}, {{ target_table_null }})
 {% endmacro %}
