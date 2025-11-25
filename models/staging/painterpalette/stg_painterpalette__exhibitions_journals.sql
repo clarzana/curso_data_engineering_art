@@ -11,7 +11,7 @@ renamed as (
         source.title::varchar(512) as title,
         source.subtitle::varchar(1024) as subtitle,
         concat('https://www.e-flux.com', source.eflux_link)::varchar(1024) as link_to_announcement,
-        to_varchar(source.announcement_date, 'YYYYMMDD')::varchar(8) as announcement_date_id
+        concat('+', to_varchar(source.announcement_date, 'YYYYMMDD'))::varchar(16) as announcement_date_id
     from source
     union
     select
@@ -19,7 +19,7 @@ renamed as (
         null as title,
         null as subtitle,
         null as link_to_announcement,
-        '99999999'::varchar(8) as announcement_date_id
+        '+00000000'::varchar(8) as announcement_date_id
 )
 
 select * from renamed

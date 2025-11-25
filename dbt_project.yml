@@ -67,3 +67,5 @@ vars:
   genre_null: "'nogenre'"
   gender_null: "'nogender'"
   exhibition_null: "'noexhibition'"
+  contemporary_null: "'nocontemporary'"
+  artwork_null: "'noartwork'"
