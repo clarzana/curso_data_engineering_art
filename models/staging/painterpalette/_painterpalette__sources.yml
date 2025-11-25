@@ -415,7 +415,8 @@ sources:
           - name: subtitle
             data_type: varchar(512)
             description: >
-              Subtítulo de la revista o exposición que se anuncia
+              Subtitle of the journal or the exhibition announced.
+              Usually, it is the name or description of the institution or place where the exposition is carried out. 
 
           - name: announcement_date
             data_type: date
