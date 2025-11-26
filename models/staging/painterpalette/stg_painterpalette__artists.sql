@@ -127,7 +127,7 @@ select distinct
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.birth_place', 'places') ]) }}::varchar(32) as birth_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.death_place', 'places') ]) }}::varchar(32) as death_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.is_contemporary', 'contemporary_options') ]) }}::varchar(32) as is_contemporary_id,
-    to_date('20251125')::date as updated_at
+    to_timestamp_tz('2025-11-25 00:00:00.000 +0100')::timestamp_tz as updated_at
 from renamed r
 union
 select
@@ -139,7 +139,7 @@ select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'places') ]) }}::varchar(32) as birth_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'places') ]) }}::varchar(32) as death_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'contemporary_options') ]) }}::varchar(32) as is_contemporary_id,
-    to_date('20251125')::date as updated_at
+    to_timestamp_tz('2025-11-25 00:00:00.000 +0100')::timestamp_tz as updated_at
 
 
 {% if is_incremental() %}

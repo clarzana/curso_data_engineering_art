@@ -37,7 +37,7 @@ models:
         description: ""
 
       - name: updated_at
-        data_type: date
+        data_type: timestamp
         description: ""
 
 
