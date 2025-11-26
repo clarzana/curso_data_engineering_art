@@ -11,7 +11,7 @@ renamed as (
         source.title::varchar(512) as title,
         source.subtitle::varchar(1024) as subtitle,
         concat('https://www.e-flux.com', source.eflux_link)::varchar(1024) as link_to_announcement,
-        concat('+', to_varchar(source.announcement_date, 'YYYYMMDD'))::varchar(16) as announcement_date_id
+        source.announcement_date::date as announcement_date
     from source
 )
 

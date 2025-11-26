@@ -9,7 +9,7 @@ source_demo as (
     from
         {{ ref('demonyms') }}
 ),
-collect as (
+renamed as (
 
     select
         split_locations.value as place_name
@@ -37,26 +37,14 @@ collect as (
     where place_name not like ''
     union
     select
-        split_ppna.value as place_name
+        ifnull(demo.Country, split_ppna.value) as place_name
     from source_pp ppna, lateral split_to_table(input => ppna.nationality, ',') as split_ppna
+    inner join source_demo demo on contains(demo.demonym, split_ppna.value)
     union
     select
         ppci.citizenship as place_name
     from source_pp ppci
 
-), renamed as (
-    select
-        replace(replace(
-            case
-                when contains(lower(demo.demonym), lower(c.place_name))
-                then demo.Country
-                else c.place_name
-            end
-        , ''''), '"')::varchar(512) as place_name
-    from collect c
-    full join source_demo demo
-    on c.place_name = demo.demonym
-    
 )
 
 select distinct

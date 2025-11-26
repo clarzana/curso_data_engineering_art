@@ -2,7 +2,7 @@ with
 
 source_pp as (
     select * from
-        {{ ref('base_painterpalette__painterpalette') }},
+        {{ ref('base_painterpalette__painterpalette') }}
 ),
 source_a5 as (
     select * from
@@ -17,7 +17,7 @@ renamed as (
     select
         {{ dbt_utils.generate_surrogate_key([return_null_substitute('coalesce(sch_recolectados.art_school_name, sch.art_school_name)', "art_schools")])}}::varchar(32) as art_school_id,
         sch_recolectados.art_school_name::varchar(256) as art_school_name,
-        {{ dbt_utils.generate_surrogate_key([ return_null_substitute('coalesce(sch.origin_country, sch_recolectados.origin_country)', "countries") ]) }}::varchar(32) as art_school_origin_country_id
+        {{ dbt_utils.generate_surrogate_key([ return_null_substitute('coalesce(sch.origin_country, sch_recolectados.origin_country)', "places") ]) }}::varchar(32) as art_school_origin_country_id
     from ( 
         select distinct
             trim(split_school.value, ', ')::varchar(512) as art_school_name,
@@ -45,7 +45,7 @@ renamed as (
     select
         {{ dbt_utils.generate_surrogate_key([ return_null_substitute("null", "art_schools") ]) }}::varchar(32) as art_school_id,
         {{ var('art_school_null_message') }}::varchar(512) as art_school_name,
-        {{ dbt_utils.generate_surrogate_key([ return_null_substitute("null", "countries") ]) }}::varchar(32) as art_school_origin_country_id
+        {{ dbt_utils.generate_surrogate_key([ return_null_substitute("null", "places") ]) }}::varchar(32) as art_school_origin_country_id
 )
 
 select distinct * from renamed

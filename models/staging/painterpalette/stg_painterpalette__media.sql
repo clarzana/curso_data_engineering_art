@@ -8,16 +8,16 @@ source_a5 as (
 renamed as (
 
     select
-        media as media_description
+        media as medium_description
     from source_a5 a5
 
 )
 
 select distinct
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('media_description', 'media') ]) }}::varchar(32) as media_id,
-    r.media_description::varchar(1024) as media_description
+    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('medium_description', 'media') ]) }}::varchar(32) as medium_id,
+    r.medium_description::varchar(1024) as medium_description
 from renamed r
 union
 select
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'media') ]) }}::varchar(32) as media_id,
-    {{ var('medium_null_message') }}::varchar(1024) as media_description
+    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'media') ]) }}::varchar(32) as medium_id,
+    {{ var('medium_null_message') }}::varchar(1024) as medium_description

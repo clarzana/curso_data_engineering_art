@@ -16,11 +16,11 @@ models:
         data_type: varchar
         description: ""
 
-      - name: birth_year_id
+      - name: birth_year
         data_type: varchar
         description: ""
 
-      - name: death_year_id
+      - name: death_year
         data_type: varchar
         description: ""
 
@@ -38,6 +38,34 @@ models:
 
       - name: updated_at
         data_type: timestamp
+        description: ""
+
+
+  - name: stg_painterpalette__artworks
+    description: ""
+    columns:
+      - name: artwork_id
+        data_type: varchar
+        description: ""
+
+      - name: artwork_name
+        data_type: varchar
+        description: ""
+
+      - name: image_url
+        data_type: varchar
+        description: ""
+
+      - name: media
+        data_type: varchar
+        description: ""
+
+      - name: date_created
+        data_type: varchar
+        description: ""
+
+      - name: updated_at
+        data_type: varchar
         description: ""
 
 
@@ -81,5 +109,176 @@ models:
         description: ""
 
       - name: place_name
+        data_type: varchar
+        description: ""
+
+  - name: stg_painterpalette__contemporary_options
+    description: ""
+    columns:
+      - name: contemporary_option_id
+        data_type: varchar
+        description: ""
+
+      - name: contemporary_option
+        data_type: varchar
+        description: ""
+
+
+  - name: stg_painterpalette__genders
+    description: ""
+    columns:
+      - name: gender_id
+        data_type: varchar
+        description: ""
+
+      - name: gender_description
+        data_type: varchar
+        description: ""
+
+
+  - name: stg_painterpalette__genres
+    description: ""
+    columns:
+      - name: genre_id
+        data_type: varchar
+        description: ""
+
+      - name: genre_description
+        data_type: varchar
+        description: ""
+
+
+  - name: stg_painterpalette__media
+    description: ""
+    columns:
+      - name: medium_id
+        data_type: varchar
+        description: ""
+
+      - name: medium_description
+        data_type: varchar
+        description: ""
+
+
+  - name: stg_painterpalette__exbitions_journals
+    description: ""
+    columns:
+      - name: exhibition_journal_id
+        data_type: varchar
+      - name: title
+        data_type: varchar
+      - name: subtitle
+        data_type: varchar
+      - name: link_to_announcement
+        data_type: varchar
+      - name: announcement_date
+        data_type: varchar
+
+
+  - name: stg_painterpalette__artists_art_schools
+    description: ""
+    columns:
+      - name: artist_art_school_id
+        data_type: varchar
+        description: ""
+
+
+      - name: art_school_id
+        data_type: varchar
+        description: ""
+
+      - name: artist_id
+        data_type: varchar
+        description: ""
+
+
+  - name: stg_painterpalette__artists_exhibitions_journals
+    description: ""
+    columns:
+      - name: artist_exhibition_journal_id
+        data_type: varchar
+        description: ""
+
+      - name: exhibition_journal_id
+        data_type: varchar
+        description: ""
+
+      - name: artist_id
+        data_type: varchar
+        description: ""
+
+      - name: in_title
+        data_type: boolean
+        description: ""
+
+
+  - name: stg_painterpalette__artists_places
+    description: ""
+    columns:
+      - name: artist_place_id
+        data_type: varchar
+        description: ""
+
+      - name: place_id
+        data_type: varchar
+        description: ""
+
+      - name: artist_id
+        data_type: varchar
+        description: ""
+
+      - name: stay_start_year
+        data_type: number
+        description: ""
+
+      - name: stay_end_year
+        data_type: number
+        description: ""
+
+
+  - name: stg_painterpalette__artworks_genres
+    description: ""
+    columns:
+      - name: artwork_genre_id
+        data_type: varchar
+        description: ""
+
+      - name: genre_id
+        data_type: varchar
+        description: ""
+
+      - name: artwork_id
+        data_type: varchar
+        description: ""
+
+
+  - name: stg_painterpalette__artworks_styles
+    description: ""
+    columns:
+      - name: artwork_style_id
+        data_type: varchar
+        description: ""
+
+      - name: style_id
+        data_type: varchar
+        description: ""
+
+      - name: artwork_id
+        data_type: varchar
+        description: ""
+
+
+  - name: stg_painterpalette__authorships
+    description: ""
+    columns:
+      - name: authorship_id
+        data_type: varchar
+        description: ""
+
+      - name: artist_id
+        data_type: varchar
+        description: ""
+
+      - name: artwork_id
         data_type: varchar
         description: ""

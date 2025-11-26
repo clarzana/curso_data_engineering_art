@@ -2,7 +2,8 @@
     config(
         materialized='incremental',
         unique_key = 'artist_id',
-        on_schema_change='sync_all_columns'
+        on_schema_change='sync_all_columns',
+        full_refresh = true
     )
 }}
 
@@ -33,24 +34,8 @@ principal as (
             then null
             else pp.gender
         end as gender,
-        concat(
-                case
-                    when pp.birth_year::integer>0
-                    then '+'
-                    when pp.birth_year::integer<0
-                    then '-'
-                    else '+'
-                end,
-                pp.birth_year::integer::varchar, '0000') as birth_year_id,
-        concat(
-                case
-                    when pp.death_year::integer>0
-                    then '+'
-                    when pp.death_year::integer<0
-                    then '-'
-                    else '+'
-                end,
-                pp.death_year::integer::varchar, '0000') as death_year_id,
+        pp.birth_year::integer as birth_year,
+        pp.death_year::integer as death_year,
         case
             when pp.birth_place like 'http%//%.%'
             then null
@@ -67,27 +52,41 @@ principal as (
     select
         p.artist_name as artist_name,
         coalesce(p.gender, recolectados.gender) as gender,
-        coalesce(p.birth_year_id, recolectados.birth_year_id) as birth_year_id,
-        coalesce(p.death_year_id, recolectados.death_year_id) as death_year_id,
+        coalesce(p.birth_year, recolectados.birth_year) as birth_year,
+        coalesce(p.death_year, recolectados.death_year) as death_year,
         coalesce(p.birth_place, recolectados.birth_place) as birth_place,
         coalesce(p.death_place, recolectados.death_place) as death_place,
         coalesce(p.is_contemporary, recolectados.is_contemporary) as is_contemporary
     from principal p
     full join
     (
-        select
-            case
-                when charindex('after', lower(a5.author_name)) < 1
-                then null
-                else substr(a5.author_name, 1, charindex('after', lower(a5.author_name)) - 1)
-            end as artist_name,
-            null as gender,
-            null as birth_year_id,
-            null as death_year_id,
-            null as birth_place,
-            null as death_place,
-            null as is_contemporary
-        from source_a5 a5
+        select distinct
+            split_artists.value as artist_name,
+            gender,
+            birth_year,
+            death_year,
+            birth_place,
+            death_place,
+            is_contemporary
+        from (
+            select
+                trim(regexp_replace(case
+                    when charindex('after', lower(a5.author_name))=1
+                    then null
+                    when charindex('after', lower(a5.author_name))>1
+                    then substr(a5.author_name, 1, charindex('after', lower(a5.author_name)) - 1)
+                    else a5.author_name
+                end,
+                '(\\bpainted by\\b|\\bpossibly\\b|\\bcopy\\b|\\bcase possibly\\b|\\battributed to\\b|\\bartist:\\s*copy\\b|\\bartist:\\s*\\b|\\bcopied by\\b|\\bcopy by\\b)', '', 1, 1, 'i')
+                ) as artist_name,
+                null as gender,
+                null as birth_year,
+                null as death_year,
+                null as birth_place,
+                null as death_place,
+                null as is_contemporary
+            from source_a5 a5
+        ) as a5_unsplit, lateral split_to_table(input => a5_unsplit.artist_name, ' and ') as split_artists
         union
         select
             case
@@ -98,8 +97,8 @@ principal as (
                 else substr(wp.artist, 1, charindex('after', lower(wp.artist)) - 1)
             end as artist_name,
             null as gender,
-            null as birth_year_id,
-            null as death_year_id,
+            null as birth_year,
+            null as death_year,
             null as birth_place,
             null as death_place,
             null as is_contemporary
@@ -108,8 +107,8 @@ principal as (
         select distinct
             split_ej.value::varchar as artist_name,
             null as gender,
-            null as birth_year_id,
-            null as death_year_id,
+            null as birth_year,
+            null as death_year,
             null as birth_place,
             null as death_place,
             null as is_contemporary
@@ -122,8 +121,8 @@ select distinct
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.artist_name', 'artists') ]) }}::varchar(32) as artist_id,
     r.artist_name::varchar(512) as artist_name,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.gender', 'artists') ]) }}::varchar(32) as gender_id,
-    ifnull(r.birth_year_id, '+00000000')::varchar(16) as birth_year_id,
-    ifnull(r.death_year_id, '+00000000')::varchar(16) as death_year_id,
+    ifnull(r.birth_year, 9999)::varchar(16) as birth_year,
+    ifnull(r.death_year, 9999)::varchar(16) as death_year,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.birth_place', 'places') ]) }}::varchar(32) as birth_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.death_place', 'places') ]) }}::varchar(32) as death_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.is_contemporary', 'contemporary_options') ]) }}::varchar(32) as is_contemporary_id,
@@ -134,8 +133,8 @@ select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'artists') ]) }}::varchar(32) as artist_id,
     {{ var('artist_null_message') }}::varchar(512) as artist_name,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'artists') ]) }}::varchar(32) as gender_id,
-    '+00000000'::varchar(16) as birth_year_id,
-    '+00000000'::varchar(16) as death_year_id,
+    9999::varchar(16) as birth_year,
+    9999::varchar(16) as death_year,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'places') ]) }}::varchar(32) as birth_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'places') ]) }}::varchar(32) as death_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'contemporary_options') ]) }}::varchar(32) as is_contemporary_id,

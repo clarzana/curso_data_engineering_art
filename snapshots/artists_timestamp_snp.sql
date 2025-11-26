@@ -5,8 +5,7 @@
         target_schema='snapshots',
         unique_key='artist_id',
         strategy='timestamp',
-        updated_at='updated_at',
-        hard_deletes='invalidate'
+        updated_at='updated_at'
     )
 }}
 
@@ -14,8 +13,8 @@ select
     artist_id,
     artist_name,
     gender_id,
-    birth_year_id,
-    death_year_id,
+    birth_year,
+    death_year,
     birth_place_id,
     death_place_id,
     is_contemporary_id,
