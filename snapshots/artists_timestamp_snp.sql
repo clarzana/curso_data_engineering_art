@@ -5,8 +5,7 @@
         target_schema='snapshots',
         unique_key='artist_id',
         strategy='timestamp',
-        updated_at='updated_at',
-        hard_deletes='invalidate'
+        updated_at='updated_at'
     )
 }}
 
