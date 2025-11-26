@@ -26,31 +26,32 @@ renamed as (
         a5.image_url as image_url,
         a5.media as media,
         case when regexp_like(a5.date, '[^\\d]*')
-            then 0
+            then null
             else case when regexp_like(a5.date, '[^\\d]*\\b\\d+-\\d+-\\d+\\b[^\\d]*', 'i') or regexp_like(a5.date, '[^\\d]*\\b\\d+\\/\\d+\\/\\d+\\b[^\\d]*', 'i')
                 then year(try_to_date(regexp_substr(a5.date, '\\d+(-|\\/)\\d+(-|\\/)\\d+')))
                 when regexp_like(a5.date, '[^\\d]*\\b\\d+-\\d+\\b[^\\d]*', 'i') or regexp_like(a5.date, '[^\\d]*\\b\\d+\\/\\d+\\b[^\\d]*', 'i')
                 then regexp_substr(regexp_substr(a5.date, '\\d+(-|\\/)\\d+'), '\\d+')
                 when regexp_like(a5.date, '\\b\\d{1,4}\\b')
                 then regexp_substr(a5.date, '\\d{1,4}\\b')
-                else 0
+                else null
             end                    
         end::integer as year_created,
 
         case when regexp_like(a5.date, '[^\\d]*')
-            then 0
+            then null
             else case when regexp_like(a5.date, '[^\\d]*\\b\\d+-\\d+-\\d+\\b[^\\d]*', 'i') or regexp_like(a5.date, '[^\\d]*\\b\\d+\\/\\d+\\/\\d+\\b[^\\d]*', 'i')
                 then month(try_to_date(regexp_substr(a5.date, '\\d+(-|\\/)\\d+(-|\\/)\\d+')))
                 when regexp_like(a5.date, '[^\\d]*\\b\\d+-\\d+\\b[^\\d]*', 'i') or regexp_like(a5.date, '[^\\d]*\\b\\d+\\/\\d+\\b[^\\d]*', 'i')
                 then regexp_substr(regexp_substr(a5.date, '\\d+(-|\\/)\\d+'), '\\d+', 1, 2)
+                else null
             end                    
         end::integer as month_created,
 
         case when regexp_like(a5.date, '[^\\d]*')
-            then 0
+            then null
             else case when regexp_like(a5.date, '.*\\b\\d+-\\d+-\\d+\\b.*', 'i') or regexp_like(a5.date, '.*\\b\\d+\\/\\d+\\/\\d+\\b.*', 'i')
                 then day(try_to_date(regexp_substr(a5.date, '\\d+(-|\\/)\\d+(-|\\/)\\d+')))
-                else 0
+                else null
             end                    
         end::integer as day_created
     from source_a5 a5
@@ -66,28 +67,21 @@ renamed as (
 )
 
 select distinct
-    {{ dbt_utils.generate_surrogate_key([ 'r.artwork_name' ]) }}::varchar(32) as artwork_id,
+    {{ dbt_utils.generate_surrogate_key([ 'r.artwork_name', 'r.image_url' ]) }}::varchar(32) as artwork_id,
     r.artwork_name as artwork_name,
     r.image_url as image_url,
     r.media as media,
-    case
-        when r.year_created=0
-        then '+00000000'
-        else case
-            when r.month_created=0
-            then concat('+', right(concat('0000', cast(r.year_created as varchar)), 4), '0000')
-            else case
-                when r.day_created=0
-                then concat('+', right(concat('0000', cast(r.year_created as varchar)), 4), right(concat('00', cast(r.month_created as varchar)), 2), '00')
-                else concat('+', right(concat('0000', cast(r.year_created as varchar)), 4), right(concat('00', cast(r.month_created as varchar)), 2), right(concat('00', cast(r.day_created as varchar)), 2))
-            end
-        end
-    end::varchar(16) as date_created_id
+    date_from_parts(
+        r.year_created,
+        ifnull(r.month_created, 1),
+        ifnull(r.day_created, 1)
+    ) as date_created,
+    to_date('2025-11-25') as date_updated
 from renamed r
 
 
 {% if is_incremental() %}
 
-  where date_created > (select max(date_created) from {{ this }})
+  where r.date_updated > (select max(date_updated) from {{ this }})
 
 {% endif %}

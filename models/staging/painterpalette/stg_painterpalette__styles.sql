@@ -28,7 +28,7 @@ renamed as (
     select
         {{ dbt_utils.generate_surrogate_key([return_null_substitute('coalesce(sty_recolectados.style_name, st.style_name)', 'styles')]) }}::varchar(32) as style_id,
         sty_recolectados.style_name::varchar(256) as style_name,
-        {{ dbt_utils.generate_surrogate_key([return_null_substitute('coalesce(st.origin_country, sty_recolectados.origin_country)', 'countries')]) }}::varchar(32) as style_origin_country_id
+        {{ dbt_utils.generate_surrogate_key([return_null_substitute('coalesce(st.origin_country, sty_recolectados.origin_country)', 'places')]) }}::varchar(32) as style_origin_country_id
     from (
         select distinct
             trim(ppst.value, ',') as style_name,
@@ -41,9 +41,9 @@ renamed as (
         from source_pp pp, lateral split_to_table(input => trim(pp.stylesyears, '{}:0123456789,-'), ',') ppstye
         union
         select distinct
-            trim(a5st.value, ',') as style_name,
+            trim(a5st_colon.value, ';, ') as style_name,
             null as origin_country
-        from source_a5 a5, lateral split_to_table(input => trim(a5.style, ','), ',') a5st
+        from source_a5 a5, lateral split_to_table(input => trim(a5.style, ', '), ',') a5st_comma, lateral split_to_table(input => trim(a5st_comma.value, '; '), ';') a5st_colon
         union
         select distinct
             wp.style as style_name,

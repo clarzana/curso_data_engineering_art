@@ -20,7 +20,7 @@ renamed as (
     select distinct
         case 
             when wpgenre.value ilike '%no genre%'
-            then 'No known genre'
+            then null
             else wpgenre.value
         end::varchar(256) as genre_name
     from source_wp wp, lateral split_to_table(input => wp.genre, ',') wpgenre
