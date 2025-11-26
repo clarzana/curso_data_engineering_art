@@ -52,6 +52,7 @@ renamed as (
     on with_years.artist_name = without_years.artist_name
 )
 select distinct
+    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.place_name', 'places'), return_null_substitute('r.artist_name', 'artists') ])}}::varchar(32) as artist_place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.place_name', 'places') ])}}::varchar(32) as place_id,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.artist_name', 'artists') ])}}::varchar(32) as artist_id,
     r.stay_start_year::integer as stay_start_year,

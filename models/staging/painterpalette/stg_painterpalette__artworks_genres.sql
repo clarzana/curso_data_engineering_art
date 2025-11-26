@@ -14,6 +14,7 @@ source_wp as (
 renamed as (
 
     select
+        {{ dbt_utils.generate_surrogate_key([return_null_substitute('recolectados.genre_name', 'genres'), 'recolectados.artwork_name', 'recolectados.image_url']) }}::varchar(32) as artwork_genre_id,
         {{ dbt_utils.generate_surrogate_key([return_null_substitute('recolectados.genre_name', 'genres')]) }}::varchar(32) as genre_id,
         {{ dbt_utils.generate_surrogate_key([ 'recolectados.artwork_name', 'recolectados.image_url']) }}::varchar(32) as artwork_id
     from (

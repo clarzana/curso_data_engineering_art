@@ -7,6 +7,8 @@ source_pp as (
 renamed as (
 
     select
+        {{ dbt_utils.generate_surrogate_key([ return_null_substitute('recolectados.art_school_name', "art_schools"),
+        return_null_substitute('recolectados.artist_name', 'artists')])}}::varchar(32) as artist_art_school_id,
         {{ dbt_utils.generate_surrogate_key([ return_null_substitute('recolectados.art_school_name', "art_schools")])}}::varchar(32) as art_school_id,
         {{ dbt_utils.generate_surrogate_key([ return_null_substitute('recolectados.artist_name', 'artists') ]) }}::varchar(32) as artist_id
     from ( 
