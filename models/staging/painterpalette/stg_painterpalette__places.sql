@@ -51,6 +51,7 @@ select distinct
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.place_name', 'places') ]) }}::varchar(32) as place_id,
     r.place_name as place_name
 from renamed r
+where place_name is not null
 union
 select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'places') ]) }}::varchar(32) as place_id,

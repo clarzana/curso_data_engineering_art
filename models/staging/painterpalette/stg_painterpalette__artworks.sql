@@ -67,7 +67,7 @@ renamed as (
 )
 
 select distinct
-    {{ dbt_utils.generate_surrogate_key([ 'r.artwork_name', 'r.image_url' ]) }}::varchar(32) as artwork_id,
+    {{ dbt_utils.generate_surrogate_key([ 'r.artwork_name', 'r.image_url', 'r.media' ]) }}::varchar(32) as artwork_id,
     r.artwork_name as artwork_name,
     r.image_url as image_url,
     r.media as media,

@@ -57,6 +57,7 @@ renamed as (
         from source_st
     ) as st
     on sty_recolectados.style_name = st.style_name
+    where sty_recolectados.style_name is not null 
     union
     select
         {{ dbt_utils.generate_surrogate_key([return_null_substitute('null', 'styles')])}}::varchar(32) as style_id,

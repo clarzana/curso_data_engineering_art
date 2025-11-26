@@ -17,6 +17,7 @@ select distinct
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('medium_description', 'media') ]) }}::varchar(32) as medium_id,
     r.medium_description::varchar(1024) as medium_description
 from renamed r
+where r.medium_description is not null
 union
 select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'media') ]) }}::varchar(32) as medium_id,
