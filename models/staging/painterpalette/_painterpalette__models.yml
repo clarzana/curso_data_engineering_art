@@ -1,6 +1,46 @@
 version: 2
 
 models:
+  - name: stg_painterpalette__artists
+    description: ""
+    columns:
+      - name: artist_id
+        data_type: varchar
+        description: ""
+
+      - name: artist_name
+        data_type: varchar
+        description: ""
+
+      - name: gender_id
+        data_type: varchar
+        description: ""
+
+      - name: birth_year_id
+        data_type: varchar
+        description: ""
+
+      - name: death_year_id
+        data_type: varchar
+        description: ""
+
+      - name: birth_place_id
+        data_type: varchar
+        description: ""
+
+      - name: death_place_id
+        data_type: varchar
+        description: ""
+
+      - name: is_contemporary_id
+        data_type: varchar
+        description: ""
+
+      - name: updated_at
+        data_type: date
+        description: ""
+
+
   - name: stg_painterpalette__styles
     description: ""
     columns:
@@ -16,6 +56,7 @@ models:
         data_type: varchar
         description: ""
 
+
   - name: stg_painterpalette__art_schools
     description: ""
     columns:
@@ -28,5 +69,17 @@ models:
         description: ""
 
       - name: art_school_origin_country_id
+        data_type: varchar
+        description: ""
+
+
+  - name: stg_painterpalette__places
+    description: ""
+    columns:
+      - name: place_id
+        data_type: varchar
+        description: ""
+
+      - name: place_name
         data_type: varchar
         description: ""

@@ -13,13 +13,6 @@ renamed as (
         concat('https://www.e-flux.com', source.eflux_link)::varchar(1024) as link_to_announcement,
         concat('+', to_varchar(source.announcement_date, 'YYYYMMDD'))::varchar(16) as announcement_date_id
     from source
-    union
-    select
-        {{ dbt_utils.generate_surrogate_key([return_null_substitute('null', 'exhibitions_journals')]) }}::varchar(32) as exhibition_journal_id,
-        null as title,
-        null as subtitle,
-        null as link_to_announcement,
-        '+00000000'::varchar(8) as announcement_date_id
 )
 
 select * from renamed

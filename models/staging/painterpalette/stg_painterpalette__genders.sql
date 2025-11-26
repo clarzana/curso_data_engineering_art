@@ -20,4 +20,4 @@ from renamed r
 union
 select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'genders') ]) }}::varchar(32) as gender_id,
-    'Gender unknown'::varchar(512) as gender_description
+    {{ var('gender_null_message') }}::varchar(512) as gender_description

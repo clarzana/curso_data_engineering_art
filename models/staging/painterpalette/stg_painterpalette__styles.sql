@@ -60,8 +60,8 @@ renamed as (
     union
     select
         {{ dbt_utils.generate_surrogate_key([return_null_substitute('null', 'styles')])}}::varchar(32) as style_id,
-        'No known style'::varchar(256) as style_name,
-        {{ dbt_utils.generate_surrogate_key([return_null_substitute('null', 'countries')])}}::varchar(32) as style_origin_country_id
+        {{ var('style_null_message') }}::varchar(256) as style_name,
+        {{ dbt_utils.generate_surrogate_key([return_null_substitute('null', 'places')])}}::varchar(32) as style_origin_country_id
 
 )
 

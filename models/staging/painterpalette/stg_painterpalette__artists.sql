@@ -132,7 +132,7 @@ from renamed r
 union
 select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'artists') ]) }}::varchar(32) as artist_id,
-    'Unknown'::varchar(512) as artist_name,
+    {{ var('artist_null_message') }}::varchar(512) as artist_name,
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'artists') ]) }}::varchar(32) as gender_id,
     '+00000000'::varchar(16) as birth_year_id,
     '+00000000'::varchar(16) as death_year_id,

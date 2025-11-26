@@ -20,4 +20,4 @@ from renamed r
 union
 select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'media') ]) }}::varchar(32) as media_id,
-    'No known media'::varchar(1024) as media_description
+    {{ var('medium_null_message') }}::varchar(1024) as media_description

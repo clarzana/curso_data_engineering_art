@@ -61,7 +61,7 @@ collect as (
 
 select distinct
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.place_name', 'places') ]) }}::varchar(32) as place_id,
-    r.place_name
+    r.place_name as place_name
 from renamed r
 union
 select
