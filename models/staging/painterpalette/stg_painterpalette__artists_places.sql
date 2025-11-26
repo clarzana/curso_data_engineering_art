@@ -1,147 +1,59 @@
-{{
-    config(
-        materialized='incremental',
-        unique_key = 'artist_id',
-        on_schema_change='sync_all_columns'
-    )
-}}
-
 with 
 
 source_pp as (
     select * from
         {{ ref('base_painterpalette__painterpalette') }}
 ),
-source_ej as (
+source_demo as(
     select * from
-        {{ ref("base_painterpalette__exhibitions_journals") }}
+        {{ ref('demonyms') }}
 ),
-source_a5 as (
-    select * from
-        {{ ref("base_painterpalette__art500k_paintings") }}
-),
-source_wp as (
-    select * from
-        {{ ref("base_painterpalette__wikiart_pieces") }}
-),
-principal as (
+renamed as (
 
     select 
-        pp.artist as artist_name,
-        case
-            when pp.gender like 'http%//%.%'
-            then null
-            else pp.gender
-        end as gender,
-        pp.birth_year::integer as birth_year,
-        pp.death_year::integer as death_year,
-        case
-            when pp.birth_place like 'http%//%.%'
-            then null
-            else pp.birth_place
-        end as birth_place,
-        case
-            when pp.death_place like 'http%//%.%'
-            then null
-            else pp.death_place
-        end as death_place,
-        pp.contemporary as is_contemporary
-    from source_pp pp
-), renamed as (
-    select
-        p.artist_name as artist_name,
-        coalesce(p.gender, recolectados.gender) as gender,
-        coalesce(p.birth_year, recolectados.birth_year) as birth_year,
-        coalesce(p.death_year, recolectados.death_year) as death_year,
-        coalesce(p.birth_place, recolectados.birth_place) as birth_place,
-        coalesce(p.death_place, recolectados.death_place) as death_place,
-        coalesce(p.is_contemporary, recolectados.is_contemporary) as is_contemporary
-    from principal p
-    full join
-    (
-        select distinct
-            split_artists.value as artist_name,
-            gender,
-            birth_year,
-            death_year,
-            birth_place,
-            death_place,
-            is_contemporary
-        from (
-            select
-                trim(regexp_replace(case
-                    when charindex('after', lower(a5.author_name))=1
-                    then null
-                    when charindex('after', lower(a5.author_name))>1
-                    then substr(a5.author_name, 1, charindex('after', lower(a5.author_name)) - 1)
-                    else a5.author_name
-                end,
-                '(\\bpainted by\\b|\\bpossibly\\b|\\bcopy\\b|\\bcase possibly\\b|\\battributed to\\b|\\bartist:\\s*copy\\b|\\bartist:\\s*\\b|\\bcopied by\\b|\\bcopy by\\b)', '', 1, 1, 'i')
-                ) as artist_name,
-                null as gender,
-                null as birth_year,
-                null as death_year,
-                null as birth_place,
-                null as death_place,
-                null as is_contemporary
-            from source_a5 a5
-        ) as a5_unsplit, lateral split_to_table(input => a5_unsplit.artist_name, ' and ') as split_artists
+        with_years.place_name,
+        with_years.artist_name,
+        with_years.stay_start_year,
+        with_years.stay_end_year
+    from (
+
+        select
+            trim(split_loc_with_years.value, '0123456789: ,''"-') as place_name,
+            pplwy.artist as artist_name,
+            regexp_substr(split_year_ranges.value, '\\d{4}', 1, 1) as stay_start_year,
+            regexp_substr(split_year_ranges.value, '\\d{4}', 1, 2) as stay_end_year
+        from source_pp pplwy,
+        lateral flatten(input => parse_json(pplwy.locations_with_years)) as split_loc_with_years,
+        lateral split_to_table(input => regexp_substr(split_loc_with_years.value::varchar, '(\\d(\\d|-|,)*\\d)'), ',') as split_year_ranges
+    ) as with_years
+    full join (
+        select
+            split_locations.value as place_name,
+            ppl.artist as artist_name,
+            null as stay_start_year,
+            null as stay_end_year
+        from source_pp ppl, lateral split_to_table(input => trim(ppl.locations, ', []'), ',') as split_locations
         union
         select
-            case
-                when charindex('after', lower(wp.artist)) < 1
-                then null
-                when wp.artist ilike '%unknown%' or wp.artist ilike '%not known%' or wp.artist ilike '%not %' or wp.artist ilike '%anony%'
-                then null
-                else substr(wp.artist, 1, charindex('after', lower(wp.artist)) - 1)
-            end as artist_name,
-            null as gender,
-            null as birth_year,
-            null as death_year,
-            null as birth_place,
-            null as death_place,
-            null as is_contemporary
-        from source_wp wp
+            ifnull(demo.Country, split_ppna.value) as place_name,
+            ppna.artist as artist_name,
+            null as stay_start_year,
+            null as stay_end_year
+        from source_pp ppna, lateral split_to_table(input => ppna.nationality, ',') as split_ppna
+        inner join source_demo demo on contains(demo.demonym, split_ppna.value)
         union
-        select distinct
-            split_ej.value::varchar as artist_name,
-            null as gender,
-            null as birth_year,
-            null as death_year,
-            null as birth_place,
-            null as death_place,
-            null as is_contemporary
-        from source_ej ej, lateral flatten(input => ej.artists) as split_ej
-    ) as recolectados
-    on recolectados.artist_name=p.artist_name
+        select
+            ppci.citizenship as place_name,
+            ppci.artist as artist_name,
+            null as stay_start_year,
+            null as stay_end_year
+        from source_pp ppci
+    ) as without_years
+    on with_years.artist_name = without_years.artist_name
 )
-
 select distinct
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.artist_name', 'artists') ]) }}::varchar(32) as artist_id,
-    r.artist_name::varchar(512) as artist_name,
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.gender', 'artists') ]) }}::varchar(32) as gender_id,
-    ifnull(r.birth_year, 9999)::varchar(16) as birth_year,
-    ifnull(r.death_year, 9999)::varchar(16) as death_year,
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.birth_place', 'places') ]) }}::varchar(32) as birth_place_id,
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.death_place', 'places') ]) }}::varchar(32) as death_place_id,
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.is_contemporary', 'contemporary_options') ]) }}::varchar(32) as is_contemporary_id,
-    to_timestamp_tz('2025-11-25 00:00:00.000 +0100')::timestamp_tz as updated_at
+    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.place_name', 'places') ])}}::varchar(32) as place_id,
+    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.artist_name', 'artists') ])}}::varchar(32) as artist_id,
+    r.stay_start_year::integer as stay_start_year,
+    r.stay_end_year::integer as stay_end_year
 from renamed r
-union
-select
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'artists') ]) }}::varchar(32) as artist_id,
-    {{ var('artist_null_message') }}::varchar(512) as artist_name,
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'artists') ]) }}::varchar(32) as gender_id,
-    9999::varchar(16) as birth_year,
-    9999::varchar(16) as death_year,
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'places') ]) }}::varchar(32) as birth_place_id,
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'places') ]) }}::varchar(32) as death_place_id,
-    {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'contemporary_options') ]) }}::varchar(32) as is_contemporary_id,
-    to_timestamp_tz('2025-11-25 00:00:00.000 +0100')::timestamp_tz as updated_at
-
-
-{% if is_incremental() %}
-
-  where updated_at > (select max(updated_at) from {{ this }})
-
-{% endif %}

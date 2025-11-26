@@ -2,7 +2,8 @@
     config(
         materialized='incremental',
         unique_key = 'artist_id',
-        on_schema_change='sync_all_columns'
+        on_schema_change='sync_all_columns',
+        full_refresh = true
     )
 }}
 

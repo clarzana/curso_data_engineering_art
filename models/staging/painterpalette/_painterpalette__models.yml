@@ -16,11 +16,11 @@ models:
         data_type: varchar
         description: ""
 
-      - name: birth_year_id
+      - name: birth_year
         data_type: varchar
         description: ""
 
-      - name: death_year_id
+      - name: death_year
         data_type: varchar
         description: ""
 
@@ -38,6 +38,34 @@ models:
 
       - name: updated_at
         data_type: timestamp
+        description: ""
+
+
+  - name: stg_painterpalette__artworks
+    description: ""
+    columns:
+      - name: artwork_id
+        data_type: varchar
+        description: ""
+
+      - name: artwork_name
+        data_type: varchar
+        description: ""
+
+      - name: image_url
+        data_type: varchar
+        description: ""
+
+      - name: media
+        data_type: varchar
+        description: ""
+
+      - name: date_created
+        data_type: varchar
+        description: ""
+
+      - name: updated_at
+        data_type: varchar
         description: ""
 
 
@@ -83,3 +111,65 @@ models:
       - name: place_name
         data_type: varchar
         description: ""
+
+  - name: contemporary_options
+    description: ""
+    columns:
+      - name: contemporary_option_id
+        data_type: varchar
+        description: ""
+
+      - name: contemporary_option
+        data_type: varchar
+        description: ""
+
+
+  - name: genders
+    description: ""
+    columns:
+      - name: gender_id
+        data_type: varchar
+        description: ""
+
+      - name: gender_description
+        data_type: varchar
+        description: ""
+
+
+  - name: genres
+    description: ""
+    columns:
+      - name: genre_id
+        data_type: varchar
+        description: ""
+
+      - name: genre_description
+        data_type: varchar
+        description: ""
+
+
+  - name: media
+    description: ""
+    columns:
+      - name: medium_id
+        data_type: varchar
+        description: ""
+
+      - name: medium_description
+        data_type: varchar
+        description: ""
+
+
+  - name: exbitions_journals
+    description: ""
+    columns:
+      - name: exhibition_journal_id
+        data_type: varchar
+      - name: title
+        data_type: varchar
+      - name: subtitle
+        data_type: varchar
+      - name: link_to_announcement
+        data_type: varchar
+      - name: announcement_date
+        data_type: varchar

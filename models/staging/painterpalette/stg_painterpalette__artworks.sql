@@ -76,12 +76,12 @@ select distinct
         ifnull(r.month_created, 1),
         ifnull(r.day_created, 1)
     ) as date_created,
-    to_date('2025-11-25') as date_updated
+    to_date('2025-11-25') as updated_at
 from renamed r
 
 
 {% if is_incremental() %}
 
-  where r.date_updated > (select max(date_updated) from {{ this }})
+  where r.updated_at > (select max(updated_at) from {{ this }})
 
 {% endif %}
