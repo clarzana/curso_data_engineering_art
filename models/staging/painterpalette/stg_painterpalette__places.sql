@@ -11,11 +11,27 @@ source_demo as (
 ),
 collect as (
 
-    select distinct
+    select
         split_locations.value as place_name
     from source_pp ppl, lateral split_to_table(input => trim(ppl.locations, ', []'), ',') as split_locations
     union
-    select distinct
+    select
+        case
+            when ppbp.birth_place like 'http%//%.%'
+            then null
+            else ppbp.birth_place
+        end as place_name
+    from source_pp ppbp
+    union
+    select
+        case
+            when ppdp.death_place like 'http%//%.%'
+            then null
+            else ppdp.death_place
+        end as place_name
+    from source_pp ppdp
+    union
+    select
         trim(split_loc_with_years.value, '0123456789: ''"-') as place_name
     from source_pp pplwy, lateral split_to_table(input => trim(pplwy.locations_with_years, ', []'), ',') as split_loc_with_years
     where place_name not like ''
@@ -40,13 +56,12 @@ collect as (
     from collect c
     full join source_demo demo
     on c.place_name = demo.demonym
-    where place_name like '%''%'
     
 )
 
 select distinct
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.place_name', 'places') ]) }}::varchar(32) as place_id,
-    r.place_name
+    r.place_name as place_name
 from renamed r
 union
 select

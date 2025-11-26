@@ -35,5 +35,5 @@ from renamed r
 union
 select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'genres') ]) }}::varchar(32) as genre_id,
-    'No known genre'::varchar(256) as genre_name
+    {{ var('genre_null_message') }}::varchar(256) as genre_name
 
