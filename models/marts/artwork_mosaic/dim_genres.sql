@@ -10,11 +10,11 @@ source_ar as(
 renamed as(
 
     select
-        ar.artwork_genre_id
+        ar.artwork_genre_id as artwork_genre_id,
         ge.genre_name,
-        ge.artwork_id
+        ar.artwork_id
     from source_ge ge
-    inner join source_ar
-    on source_ge.genre_id=source_ar.genre_id
+    inner join source_ar ar
+    on ge.genre_id=ar.genre_id
 )
 select * from renamed

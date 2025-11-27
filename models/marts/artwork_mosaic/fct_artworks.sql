@@ -16,7 +16,8 @@ source as(
         artwork_name,
         image_url,
         media,
-        date_created
+        date_created,
+        updated_at
     from source
 )
 select * from renamed
@@ -25,6 +26,6 @@ select * from renamed
 
 {% if is_incremental() %}
 
-  where r.updated_at > (select max(updated_at) from {{ this }})
+  having renamed.updated_at > (select max(renamed.updated_at) from {{ this }})
 
 {% endif %}

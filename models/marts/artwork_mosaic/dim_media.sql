@@ -6,8 +6,8 @@ source as(
 renamed as(
 
     select
-        medium_id,
-        trim(medium_description, '"')
+        medium_id as medium_id,
+        trim(medium_description, '"') as medium_description
     from source
 )
 select * from renamed
