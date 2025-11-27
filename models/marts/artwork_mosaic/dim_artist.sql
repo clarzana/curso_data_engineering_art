@@ -1,3 +1,4 @@
+
 with
 source_arti as(
     select * from
@@ -42,7 +43,7 @@ source_co as(
 renamed as(
 
     select
-        _au.artist_id               as artist_id,
+        _au.artist_id           as artist_id,
         _arti.artist_name           as artist_name,
         _ge.gender_description      as gender,
         _arti.birth_year            as birth_year,
@@ -59,7 +60,8 @@ renamed as(
         _ej.title                   as exhibition_journal_featured_in_title,
         _ej.announcement_date       as exhibition_journal_featured_in_announcement_date,
         _ej.link                    as exhibition_journal_featured_in_announcement_link,
-        _ej.subtitle                as exhibition_journal_featured_in_subtitle
+        _ej.subtitle                as exhibition_journal_featured_in_subtitle,
+        _arti.updated_at            as updated_at
         
     from source_arti _arti
     left join source_au _au         on _arti.artist_id=_au.artist_id
@@ -75,4 +77,6 @@ renamed as(
     left join source_apl _apl       on _arti.artist_id=_apl.artist_id
     left join source_pl _plapl      on _apl.place_id=_plapl.place_id
 )
-select * from renamed
+select * from renamed r
+where artist_id is not null
+

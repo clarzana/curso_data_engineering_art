@@ -247,7 +247,7 @@ models:
         data_type: varchar
         description: "Subtitle. Usually, a description of where the artist has featured in"
 
-      - name: link_to_announcement
+      - name: link
         data_type: varchar
         data_tests:
           - not_null

@@ -1,12 +1,3 @@
-{{
-    config(
-        materialized='incremental',
-        unique_key = 'artist_id',
-        on_schema_change='sync_all_columns',
-        full_refresh = true
-    )
-}}
-
 with 
 
 source_pp as (
@@ -141,9 +132,3 @@ select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'contemporary_options') ]) }}::varchar(32) as is_contemporary_id,
     to_timestamp_tz('2025-11-25 00:00:00.000 +0100')::timestamp_tz as updated_at
 
-
-{% if is_incremental() %}
-
-  where updated_at > (select max(updated_at) from {{ this }})
-
-{% endif %}

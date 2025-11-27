@@ -1,0 +1,219 @@
+version: 2
+
+models:
+  - name: fct_artworks
+    description: "Facts table. Each row is an artwork"
+    columns:
+      - name: artwork_id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+        description: >
+          Primary key
+
+      - name: artwork_name
+        data_type: varchar
+        description: >
+          The artwork's name
+
+      - name: image_url
+        data_type: varchar
+        description: >
+          A link to an image of the artwork
+
+      - name: media_id
+        data_type: varchar
+        description: >
+          Foreign key to the media used in the creation of the artwork
+
+      - name: date_created
+        data_type: date
+        description: >
+          Date of creation
+
+
+
+  - name: dim_artist
+    description: "Table of artists"
+    columns:
+      - name: artist_id
+        data_type: varchar
+        data_tests:
+          - not_null
+        description: >
+          Primary key
+
+      - name: artist_name
+        data_type: varchar
+        description: >
+          The artist's name
+
+      - name: gender
+        data_type: varchar
+        description: >
+          The artist's name
+
+      - name: birth_year
+        data_type: integer
+        description: >
+          The year of birth of the author
+
+      - name: death_year
+        data_type: integer
+        description: >
+          The year of death of the author, if deceased
+
+      - name: birth_place
+        data_type: varchar
+        description: >
+          Place of birth of the author
+
+      - name: death_place
+        data_type: varchar
+        description: >
+          Place where the author passed away, if deceased
+
+      - name: art_school
+        data_type: varchar
+        description: >
+          The art school or art group the artist belongs to
+
+      - name: art_school_origin_country
+        data_type: varchar
+        description: >
+          The country of origin of the artist's art school
+
+      - name: is_contemporary
+        data_type: varchar
+        description: >
+          Is the artist contemporary? (Are they alive?)
+
+      - name: place_stayed_at
+        data_type: varchar
+        description: >
+          Place where the artist lived in
+
+      - name: place_stay_start_year
+        data_type: integer
+        description: >
+          Starting year of the time the artist lived in a place
+
+      - name: place_stay_end_year
+        data_type: integer
+        description: >
+          Ending year of the time the artist lived in a place
+
+      - name: exhibition_journal_featured_in_id
+        data_type: varchar
+        description: >
+          Key that identifies the announcement of an exhibition or journal the artist featured in
+
+      - name: exhibition_journal_featured_in_title
+        data_type: varchar
+        description: >
+          Title of the exhibition or journal the artist featured in
+
+      - name: exhibition_journal_featured_in_announcement_date
+        data_type: date
+        description: >
+          Announcement date of the exhibition or journal the artist featured in
+
+      - name: exhibition_journal_featured_in_announcement_link
+        data_type: varchar
+        description: >
+          Link to the full announcement article about the exhibition or journal the artist featured in
+
+      - name: exhibition_journal_featured_in_subtitle
+        data_type: varchar
+        description: >
+          Subtitle of the exhibition or journal the artist featured in
+
+      - name: updated_at
+        data_type: date
+        description: >
+          Date of the last update on a specific row
+
+
+
+  - name: dim_authorships
+    description: "Intermediate table that stores relations between"
+    columns:
+      - name: authorship_id
+        data_type: varchar
+        data_tests:
+          - not_null
+          - unique
+
+        description: >
+          Primary key
+
+      - name: artwork_id
+        data_type: varchar
+        description: >
+          Foreign key to the artwork
+
+      - name: artist_id
+        data_type: varchar
+        description: >
+          Foreign key to the artist
+
+
+  - name: dim_genres
+    description: "Table of genres an artwork can follow"
+    columns:
+      - name: artwork_genre_id
+        data_type: varchar
+        data_tests:
+          - not_null
+        description: "Primary key"
+
+      - name: genre_name
+        data_type: varchar
+        description: "Name of the genre"
+
+      - name: artwork_id
+        data_type: varchar
+        description: "The artwork that follows this genre"
+
+
+  - name: dim_media
+    description: "Table with the different combinations of media an artwork was made with"
+    columns:
+      - name: medium_id
+        data_type: varchar
+        data_tests:
+          - not_null
+        description: >
+          Primary key
+
+      - name: medium_description
+        data_type: varchar
+        description: >
+          Description of the combination of media
+
+
+  - name: dim_styles
+    description: ""
+    columns:
+      - name: artwork_style_id
+        data_type: varchar
+        data_tests:
+          - not_null
+        description: >
+          Primary key
+
+      - name: artwork_id
+        data_type: varchar
+        description: >
+          Foreign key of the artwork that follows this style
+
+      - name: style_name
+        data_type: varchar
+        description: >
+          Name of the style
+
+      - name: style_origin_country
+        data_type: varchar
+        description: >
+          Country of origin of the style
