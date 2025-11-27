@@ -2,8 +2,7 @@
     config(
         materialized='incremental',
         unique_key = 'artwork_id',
-        on_schema_change='sync_all_columns',
-        full_refresh = true
+        on_schema_change='sync_all_columns'
     )
 }}
 
@@ -24,6 +23,7 @@ renamed as (
             else a5.painting_name
         end as artwork_name,
         a5.image_url as image_url,
+        -- listagg(a5.media, ', ') as media,
         a5.media as media,
         case when regexp_like(a5.date, '[^\\d]*')
             then null
@@ -55,6 +55,7 @@ renamed as (
             end                    
         end::integer as day_created
     from source_a5 a5
+    -- group by artwork_name, image_url, year_created, month_created, day_created
     union
     select
         wp.file_name as artwork_name,
@@ -79,9 +80,8 @@ select distinct
     to_date('2025-11-25') as updated_at
 from renamed r
 
-
 {% if is_incremental() %}
 
-  where r.updated_at > (select max(updated_at) from {{ this }})
+  where updated_at > (select max(updated_at) from {{ this }})
 
 {% endif %}

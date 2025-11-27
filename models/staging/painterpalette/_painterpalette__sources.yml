@@ -5,7 +5,7 @@ sources:
     schema: bronze_raw # this is the schema our raw data lives in
     database: "PAINTERPALETTE_DEV_BRONZE_DB" # this is the name of our database
     description: >
-      Cada stage interno de snowflake:
+      Each internal snowflake stage:
       PainterPalette.csv
       announcements_new_array.json
       art500k_paintings_full.csv
@@ -17,7 +17,7 @@ sources:
       * announcements_mini.json
       * art500k_paintings_cleaned.csv
       * wikiart_paintings_refined.csv
-      (* : Archivo no usado en la ingesta)
+      (* : File not used in ingestion)
 
     quoting:
       database: false
