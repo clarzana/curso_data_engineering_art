@@ -21,7 +21,7 @@ models:
         data_type: varchar
         data_tests:
           - not_null
-        description: "The foregin key of the artist's gender"
+        description: "The foreign key of the artist's gender"
 
       - name: birth_year
         data_type: integer

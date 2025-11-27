@@ -1,3 +1,12 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key = 'artwork_id',
+        on_schema_change='sync_all_columns'
+    )
+}}
+
+
 with 
 
 source_pp as (
