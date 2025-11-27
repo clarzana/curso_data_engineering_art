@@ -58,6 +58,8 @@ snapshots:
   +target_database: "PAINTERPALETTE_DEV_SILVER_DB"
   +target_schema: snapshots
 
+
+
 vars:
   art_school_null: "'noartschool'"
   art_school_null_message: "'Unknown'"

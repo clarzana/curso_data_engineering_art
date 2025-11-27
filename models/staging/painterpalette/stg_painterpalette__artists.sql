@@ -128,6 +128,7 @@ select distinct
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.is_contemporary', 'contemporary_options') ]) }}::varchar(32) as is_contemporary_id,
     to_timestamp_tz('2025-11-25 00:00:00.000 +0100')::timestamp_tz as updated_at
 from renamed r
+where r.artist_name is not null
 union
 select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'artists') ]) }}::varchar(32) as artist_id,

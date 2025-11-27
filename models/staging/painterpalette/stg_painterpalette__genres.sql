@@ -32,6 +32,7 @@ select distinct
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('r.genre_name', 'genres') ]) }}::varchar(32) as genre_id,
     r.genre_name:: varchar(256) as genre_name
 from renamed r
+where r.genre_name is not null
 union
 select
     {{ dbt_utils.generate_surrogate_key([ return_null_substitute('null', 'genres') ]) }}::varchar(32) as genre_id,
